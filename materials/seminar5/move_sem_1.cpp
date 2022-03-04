@@ -10,6 +10,10 @@ public:
         this->c_string = new char[size];
         strcpy(this->c_string, c_string);
     }
+    
+    String():c_string(new char[1]){
+        c_string = 0;
+    }
 
     String(const String& other)
     {
@@ -22,7 +26,16 @@ public:
     ~String() noexcept
     {
         std::cout << "~String()\n";
-        delete[] c_string; // delete на nullptr не даёт никакого эффекта
+        delete[] c_string;
+    }
+// Новая сущность для нас -- конструктор перемещения    
+    String(String &&other) noexcept
+    {
+        std::cout << "String(String&& other)\n";
+        c_string = other.c_string;
+        size = other.size;
+        other.c_string = nullptr;
+        other.size = 0;
     }
 
 private:
