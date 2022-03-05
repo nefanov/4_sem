@@ -1,53 +1,80 @@
 #include <iostream>
+#include <cstring>
 
-class String
-{
+class String {
+
 public:
-    explicit String(const char *const c_string)
-    {
-        std::cout << "String(const char *const c_string)\n";
-        size = strlen(c_string) + 1;
-        this->c_string = new char[size];
-        strcpy(this->c_string, c_string);
-    }
-    
-    String():c_string(new char[1]){
-        c_string = 0;
-    }
+        int size;
+        char *c_string;
 
-    String(const String& other)
-    {
-        std::cout << "String(const String& other)\n";
-        c_string = new char[other.size];
-        strcpy(c_string, other.c_string);
-        size = other.size;
-    }
+        String() = default;
 
-    ~String() noexcept
-    {
-        std::cout << "~String()\n";
-        delete[] c_string;
-    }
-// Новая сущность для нас -- конструктор перемещения    
-    String(String &&other) noexcept
-    {
-        std::cout << "String(String&& other)\n";
-        c_string = other.c_string;
-        size = other.size;
-        other.c_string = nullptr;
-        other.size = 0;
-    }
+        explicit String(const char *const c_str) {
+                std::cout << "String(const char*)\n";
+                std::cout << "new object" <<std::endl;
+                size = strlen(c_str);
+                c_string = new char[size];
 
-private:
-    char *c_string;
-    size_t size;
+                strcpy(c_string, c_str);
+        }
+
+        String(const String& other) {
+                std::cout << "String(object)\n";
+                std::cout << "new object\n";
+                c_string = new char[other.size];
+                strcpy(c_string, other.c_string);
+                size = other.size;
+        }
+
+        ~String() = default;
+/*
+{
+                std::cout << "Destr\n";
+                std::cout << size << std::endl;
+                delete[] c_string;
+        }
+
+*/
+
+        String(String &&other) {
+                std::cout << "String(String &&other\n";
+                c_string = other.c_string;
+                size = other.size;
+                other.c_string = nullptr;
+                other.size = 0;
+        }
+
+        String& operator=(String&& other) {
+                std::cout << "Operator=&&\n";
+                delete[] this->c_string;
+                this->size = other.size;
+                this->c_string = std::move(other.c_string);
+
+                return *this;
+        }
+
+        String& operator=(const String& other) {
+                std::cout << "Operator =\n";
+                strcpy(this->c_string, other.c_string);
+                size = other.size;
+                return *this;
+        }
+
 };
 
-//void test_f(String s);
+void f(String str) {
+        ;
+}
 
+String F() {
+        return std::move(String(""));
+}
 
 int main() {
-  auto string = String("Hello, C++11");
-  //test_f(std::move(string));
-  return 0;
+        String s = String("AAAAAAAAAA");
+        std::cout << "size " << s.size << std::endl;
+        s = std::move(String("ABC"));
+        std::cout << "size " << s.size << std::endl;
+        //F();
+        return 0;
 }
