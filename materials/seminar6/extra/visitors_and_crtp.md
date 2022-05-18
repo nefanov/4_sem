@@ -29,3 +29,11 @@ Value *VisitIntegerLiteral(const IntegerLiteral *E) {
   return Builder.getInt(E->getValue());
 }
 
+-- написали много таких ф-й под каждый тип expr, связали их с помощью, например, макроподстановки имен в класс ScalarExprEmitter -- и мы получили рукописный (ограниченный нашими рукописаниями) visitor.
+
+Идея неограниченного визитора:
+Пример -- RecursiveASTVisitor<Impl>
+  Impl::Traverse<...>
+  Impl::WalkUpFrom<...>
+  Impl::Visit<...> -- посетить все узлы данного типа в данном дереве
+  
