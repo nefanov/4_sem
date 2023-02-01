@@ -1,5 +1,5 @@
 #include <iostream>
-
+/* конструктор копирования, initializer list, перегрузка оператора присваивания */
 class A {
 	public:
 	const int a;
